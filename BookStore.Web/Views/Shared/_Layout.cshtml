@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookStore.Web.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/covers.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/gallery.css" asp-append-version="true" />
 </head>
 <body>
     <header class="bg-light border-bottom py-3 sticky-top">
@@ -45,8 +46,13 @@
 
                 <div class="col-lg-3 col-md-12 text-end">
                     <div class="btn-group" role="group">
-                        
-                        <button type="button" class="btn btn-primary btn-sm" id="exportBtn" title="Export to CSV">
+                        <button type="button" class="btn btn-primary btn-sm active" id="tableViewBtn">
+                            <i class="bi bi-table"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="galleryViewBtn">
+                            <i class="bi bi-grid-3x3-gap"></i>
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" id="exportBtn">
                             <i class="bi bi-download"></i>
                         </button>
                     </div>

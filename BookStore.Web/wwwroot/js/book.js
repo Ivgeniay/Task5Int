@@ -3,14 +3,44 @@
         this.expandedRows = new Set();
         this.apiService = apiService;
         this.getParametersCallback = getParametersCallback;
+        this.viewMode = 'table'; // 'table' или 'gallery'
+    }
+
+    setViewMode(mode) {
+        this.viewMode = mode;
+        const container = document.querySelector('.container-fluid');
+        container.className = `container-fluid view-${mode}`;
     }
 
     renderBooks(books) {
+        if (this.viewMode === 'gallery') {
+            this.renderBooksAsGallery(books);
+        } else {
+            this.renderBooksAsTable(books);
+        }
+    }
+
+    renderBooksAsTable(books) {
         const tbody = document.getElementById('booksTableBody');
 
         books.forEach(book => {
             const row = this.createBookRow(book);
             tbody.appendChild(row);
+        });
+    }
+
+    renderBooksAsGallery(books) {
+        let galleryContainer = document.getElementById('galleryContainer');
+        if (!galleryContainer) {
+            galleryContainer = document.createElement('div');
+            galleryContainer.id = 'galleryContainer';
+            galleryContainer.className = 'gallery-container';
+            document.querySelector('.container-fluid').appendChild(galleryContainer);
+        }
+
+        books.forEach(book => {
+            const card = this.createBookCard(book);
+            galleryContainer.appendChild(card);
         });
     }
 
@@ -30,11 +60,49 @@
         return row;
     }
 
-    async toggleBookDetails(bookIndex, row) {
+    createBookCard(book) {
+        const card = document.createElement('div');
+        card.className = 'gallery-card';
+        card.innerHTML = `
+            <div class="gallery-card-cover">
+                <img src="${book.coverImageUrl}" alt="Book cover">
+            </div>
+            <div class="gallery-card-content">
+                <div class="gallery-card-title">${book.title}</div>
+                <div class="gallery-card-authors">by ${book.authors.join(', ')}</div>
+                <div class="gallery-card-publisher">${book.publisher}</div>
+                <div class="gallery-card-meta">
+                    <span class="gallery-card-isbn">${book.isbn}</span>
+                    <span>#${book.index}</span>
+                </div>
+            </div>
+        `;
+
+        card.addEventListener('click', () => this.toggleBookDetailsGallery(book.index, card));
+        return card;
+    }
+
+    async toggleBookDetails(bookIndex, element) {
+        if (this.viewMode === 'gallery') {
+            await this.toggleBookDetailsGallery(bookIndex, element);
+        } else {
+            await this.toggleBookDetailsTable(bookIndex, element);
+        }
+    }
+
+    async toggleBookDetailsTable(bookIndex, row) {
         if (this.expandedRows.has(bookIndex)) {
             this.collapseBookDetails(bookIndex, row);
         } else {
             await this.expandBookDetails(bookIndex, row);
+        }
+    }
+
+    async toggleBookDetailsGallery(bookIndex, card) {
+        if (this.expandedRows.has(bookIndex)) {
+            this.collapseBookDetailsGallery(bookIndex, card);
+        } else {
+            await this.expandBookDetailsGallery(bookIndex, card);
         }
     }
 
@@ -48,53 +116,92 @@
                 this.expandedRows.add(bookIndex);
             }
         } catch (error) {
+            console.error('Error loading book details:', error);
+        }
+    }
+
+    async expandBookDetailsGallery(bookIndex, card) {
+        try {
+            const parameters = this.getParametersCallback();
+            const bookDetails = await this.apiService.loadBookDetails(bookIndex, parameters);
+
+            if (bookDetails) {
+                this.showBookDetailsGallery(bookIndex, card, bookDetails);
+                this.expandedRows.add(bookIndex);
+            }
+        } catch (error) {
+            console.error('Error loading book details:', error);
         }
     }
 
     showBookDetails(bookIndex, row, bookDetails) {
-        const detailsRow = document.createElement('tr');
-        detailsRow.classList.add('book-details');
-        detailsRow.innerHTML = `
-            <td colspan="5" class="p-4">
-                <div class="row">
-                    <div class="col-md-2">
-                        <div class="book-cover-container">
-                            <img src="${bookDetails.coverImageUrl}" alt="Book cover" class="book-cover-image">
-                            <div class="book-cover-overlay">
-                                <div class="book-cover-title">${this.truncateText(bookDetails.book.title, 25)}</div>
-                                <div class="book-cover-author">${this.truncateText(bookDetails.book.authors[0] || 'Unknown Author', 20)}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-                        <h5 class="mb-2">${bookDetails.book.title} <span class="text-muted">Paperback</span></h5>
-                        <p class="mb-1">by <strong>${bookDetails.book.authors.join(', ')}</strong></p>
-                        <p class="text-muted mb-3">${bookDetails.book.publisher}</p>
-                        
-                        <div class="mb-3">
-                            <button class="btn btn-primary btn-sm">
-                                <i class="bi bi-hand-thumbs-up"></i> ${bookDetails.likes}
-                            </button>
-                        </div>
+        const template = document.getElementById('table-details-template');
+        const detailsRow = template.content.cloneNode(true);
 
-                        ${bookDetails.reviews.length > 0 ? `
-                            <h6>Reviews</h6>
-                            <div class="reviews">
-                                ${bookDetails.reviews.map(review => `
-                                    <div class="mb-3">
-                                        <p class="mb-1">${review.text}</p>
-                                        <small class="text-muted">— ${review.author}, Rating: ${review.rating}/5</small>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        ` : '<p class="text-muted">No reviews available.</p>'}
-                    </div>
-                </div>
-            </td>
-        `;
+        this.populateBookDetails(detailsRow, bookDetails);
 
         row.after(detailsRow);
         row.classList.add('table-active');
+    }
+
+    showBookDetailsGallery(bookIndex, card, bookDetails) {
+        const template = document.getElementById('gallery-details-template');
+        const expandedDiv = template.content.cloneNode(true);
+
+        this.populateBookDetails(expandedDiv, bookDetails);
+
+        card.after(expandedDiv);
+        card.classList.add('expanded');
+    }
+
+    populateBookDetails(element, bookDetails) {
+        const coverImg = element.querySelector('.book-cover-image');
+        const coverTitle = element.querySelector('.book-cover-title');
+        const coverAuthor = element.querySelector('.book-cover-author');
+        const bookTitle = element.querySelector('.book-title');
+        const bookTitleMain = element.querySelector('.book-title-main');
+        const bookAuthors = element.querySelector('.book-authors');
+        const bookPublisher = element.querySelector('.book-publisher');
+        const bookLikes = element.querySelector('.book-likes');
+        const reviewsContainer = element.querySelector('.book-reviews-container');
+
+        coverImg.src = bookDetails.coverImageUrl;
+        coverTitle.textContent = this.truncateText(bookDetails.book.title, 25);
+        coverAuthor.textContent = this.truncateText(bookDetails.book.authors[0] || 'Unknown Author', 20);
+
+        if (bookTitle) bookTitle.textContent = bookDetails.book.title;
+        if (bookTitleMain) bookTitleMain.innerHTML = `${bookDetails.book.title} <span class="text-muted">Paperback</span>`;
+
+        bookAuthors.textContent = bookDetails.book.authors.join(', ');
+        bookPublisher.textContent = bookDetails.book.publisher;
+        bookLikes.innerHTML = `<i class="bi bi-hand-thumbs-up"></i> ${bookDetails.likes}`;
+
+        this.populateReviews(reviewsContainer, bookDetails.reviews);
+    }
+
+    populateReviews(container, reviews) {
+        if (reviews.length === 0) {
+            const noReviewsTemplate = document.getElementById('no-reviews-template');
+            const noReviews = noReviewsTemplate.content.cloneNode(true);
+            container.appendChild(noReviews);
+            return;
+        }
+
+        const reviewsTemplate = document.getElementById('reviews-template');
+        const reviewsSection = reviewsTemplate.content.cloneNode(true);
+        const reviewsList = reviewsSection.querySelector('.reviews-list');
+
+        reviews.forEach(review => {
+            const reviewTemplate = document.getElementById('review-item-template');
+            const reviewItem = reviewTemplate.content.cloneNode(true);
+
+            reviewItem.querySelector('.review-text').textContent = review.text;
+            reviewItem.querySelector('.review-author').textContent = `— ${review.author}, Rating: ${review.rating}/5`;
+
+            reviewsList.appendChild(reviewItem);
+        });
+
+        container.appendChild(reviewsSection);
     }
 
     collapseBookDetails(bookIndex, row) {
@@ -107,8 +214,22 @@
         this.expandedRows.delete(bookIndex);
     }
 
+    collapseBookDetailsGallery(bookIndex, card) {
+        const nextElement = card.nextElementSibling;
+        if (nextElement && nextElement.classList.contains('gallery-expanded')) {
+            nextElement.remove();
+        }
+
+        card.classList.remove('expanded');
+        this.expandedRows.delete(bookIndex);
+    }
+
     clearBooks() {
         document.getElementById('booksTableBody').innerHTML = '';
+        const galleryContainer = document.getElementById('galleryContainer');
+        if (galleryContainer) {
+            galleryContainer.innerHTML = '';
+        }
         this.expandedRows.clear();
     }
 
@@ -117,3 +238,4 @@
         return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
     }
 }
+

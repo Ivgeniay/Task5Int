@@ -17,15 +17,15 @@ namespace BookStore.Application.Services
                 .RuleFor(b => b.ISBN, f => f.Commerce.Ean13())
                 .RuleFor(b => b.Title, f => GenerateTitle(f))
                 .RuleFor(b => b.Authors, f => GenerateAuthors(f))
-                .RuleFor(b => b.Publisher, f => f.Company.CompanyName());
+                .RuleFor(b => b.Publisher, f => f.Company.CompanyName())
+                .RuleFor(b => b.CoverImageUrl, (f, b) => GenerateCoverUrl(b.Title, b.Authors.FirstOrDefault() ?? AppConstants.UnknownAuthor));
 
             var books = faker.Generate(AppConstants.PageSize);
 
             var startIndex = (parameters.PageNumber - 1) * AppConstants.PageSize + 1;
+
             for (int i = 0; i < books.Count; i++)
-            {
                 books[i].Index = startIndex + i;
-            }
 
             return new PagedResult<Book>
             {

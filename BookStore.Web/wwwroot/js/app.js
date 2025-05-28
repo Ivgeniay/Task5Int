@@ -6,13 +6,13 @@ class BookGenerator {
         this.currentPage = 1;
         this.observer = null;
 
+        this.apiService = new ApiService();
+        this.bookRenderer = new BookRenderer(this.apiService, () => this.getParameters());
+
         this.init();
     }
 
     init() {
-        this.apiService = new ApiService();
-        this.bookRenderer = new BookRenderer(this.apiService, () => this.getParameters());
-
         this.setupUI();
         this.setupEventListeners();
         this.setupIntersectionObserver();
@@ -58,6 +58,14 @@ class BookGenerator {
             });
         });
 
+        document.getElementById('tableViewBtn').addEventListener('click', () => {
+            this.switchViewMode('table');
+        });
+
+        document.getElementById('galleryViewBtn').addEventListener('click', () => {
+            this.switchViewMode('gallery');
+        });
+
         document.getElementById('exportBtn').addEventListener('click', () => {
             this.exportToCsv();
         });
@@ -79,8 +87,8 @@ class BookGenerator {
         this.currentPage = 1;
         this.bookRenderer.clearBooks();
         this.loadInitialData().then(() => {
-            setTimeout(() => this.loadUntilScrollTriggerHidden(), 300);
-        })
+            setTimeout(() => this.checkScrollTrigger(), 100);
+        });
     }
 
     checkScrollTrigger() {
@@ -91,25 +99,29 @@ class BookGenerator {
         }
     }
 
-    async loadUntilScrollTriggerHidden(attemptCount = 0) {
-        const maxAttempts = 10;
+    switchViewMode(mode) {
+        this.bookRenderer.setViewMode(mode);
 
-        if (attemptCount >= maxAttempts) {
-            return;
+        const tableBtn = document.getElementById('tableViewBtn');
+        const galleryBtn = document.getElementById('galleryViewBtn');
+
+        if (mode === 'table') {
+            tableBtn.className = 'btn btn-primary btn-sm active';
+            galleryBtn.className = 'btn btn-outline-primary btn-sm';
+        } else {
+            tableBtn.className = 'btn btn-outline-primary btn-sm';
+            galleryBtn.className = 'btn btn-primary btn-sm active';
         }
 
-        const trigger = document.getElementById('scrollTrigger');
-        const rect = trigger.getBoundingClientRect();
 
-        if (rect.top < window.innerHeight && !this.apiService.getIsLoading()) {
-            await this.loadMoreBooks();
-            await this.loadUntilScrollTriggerHidden(attemptCount + 1);
-        }
+        this.bookRenderer.clearBooks();
+        this.currentPage = 1;
+        this.loadInitialData();
     }
 
     async loadInitialData() {
         await this.loadBooks(1);
-        await this.loadUntilScrollTriggerHidden();
+        await this.loadBooks(2);
     }
 
     async loadMoreBooks() {

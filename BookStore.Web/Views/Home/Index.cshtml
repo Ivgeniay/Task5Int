@@ -28,11 +28,95 @@
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
-        <div class="mt-2">Loading more books...</div>
+        <div class="mt-2">Loading...</div>
     </div>
 </div>
 
 <div id="scrollTrigger" style="height: 1px;"></div>
+
+<template id="table-details-template">
+    <tr class="book-details">
+        <td colspan="5" class="p-4">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="book-cover-container">
+                        <img class="book-cover-image" alt="Book cover">
+                        <div class="book-cover-overlay">
+                            <div class="book-cover-title"></div>
+                            <div class="book-cover-author"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <h5 class="mb-2">
+                        <span class="book-title"></span>
+                        <span class="text-muted">Paperback</span>
+                    </h5>
+                    <p class="mb-1">by <strong class="book-authors"></strong></p>
+                    <p class="text-muted mb-3 book-publisher"></p>
+
+                    <div class="mb-3">
+                        <button class="btn btn-primary btn-sm book-likes">
+                            <i class="bi bi-hand-thumbs-up"></i>
+                        </button>
+                    </div>
+
+                    <div class="book-reviews-container"></div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</template>
+
+<template id="gallery-details-template">
+    <div class="gallery-expanded">
+        <div class="gallery-expanded-content">
+            <div class="gallery-expanded-cover">
+                <div class="book-cover-container">
+                    <img class="book-cover-image" alt="Book cover">
+                    <div class="book-cover-overlay">
+                        <div class="book-cover-title"></div>
+                        <div class="book-cover-author"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="gallery-expanded-details">
+                <h4 class="book-title-main">
+                    <span class="text-muted">Paperback</span>
+                </h4>
+                <p class="mb-1">by <strong class="book-authors"></strong></p>
+                <p class="text-muted book-publisher"></p>
+
+                <div class="mb-3">
+                    <button class="btn btn-primary btn-sm book-likes">
+                        <i class="bi bi-hand-thumbs-up"></i>
+                    </button>
+                </div>
+
+                <div class="gallery-expanded-reviews">
+                    <div class="book-reviews-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="reviews-template">
+    <h6>Reviews</h6>
+    <div class="reviews-list"></div>
+</template>
+
+<template id="review-item-template">
+    <div class="mb-3">
+        <p class="mb-1 review-text"></p>
+        <small class="text-muted review-author"></small>
+    </div>
+</template>
+
+<template id="no-reviews-template">
+    <p class="text-muted">No reviews available.</p>
+</template>
+
 
 <script type="text/javascript">
     window.appConfig = {
