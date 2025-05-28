@@ -1,18 +1,17 @@
-﻿import { BookRenderer } from './book.js';
+﻿
+import { BookRenderer } from './book.js';
 import { ApiService } from './api.js';
 
 class BookGenerator {
     constructor() {
-        this.currentPage = 1;
+        this.currentPage = 0;
         this.observer = null;
-
-        this.apiService = new ApiService();
-        this.bookRenderer = new BookRenderer(this.apiService, () => this.getParameters());
-
         this.init();
     }
 
     init() {
+        this.apiService = new ApiService();
+        this.bookRenderer = new BookRenderer(this.apiService, () => this.getParameters());
         this.setupUI();
         this.setupEventListeners();
         this.setupIntersectionObserver();
@@ -87,45 +86,22 @@ class BookGenerator {
     }
 
     onParametersChange() {
-        this.currentPage = 1;
+        this.currentPage = 0;
         this.bookRenderer.clearBooks();
-        this.loadInitialData().then(() => {
-            setTimeout(() => this.checkScrollTrigger(), 100);
-        });
-    }
-
-    checkScrollTrigger() {
-        const trigger = document.getElementById('scrollTrigger');
-        const rect = trigger.getBoundingClientRect();
-        if (rect.top < window.innerHeight && !this.apiService.getIsLoading()) {
-            this.loadMoreBooks();
-        }
-    }
-
-    switchViewMode(mode) {
-        this.bookRenderer.setViewMode(mode);
-
-        // Update button states
-        const tableBtn = document.getElementById('tableViewBtn');
-        const galleryBtn = document.getElementById('galleryViewBtn');
-
-        if (mode === 'table') {
-            tableBtn.className = 'btn btn-primary btn-sm active';
-            galleryBtn.className = 'btn btn-outline-primary btn-sm';
-        } else {
-            tableBtn.className = 'btn btn-outline-primary btn-sm';
-            galleryBtn.className = 'btn btn-primary btn-sm active';
-        }
-
-        // Re-render existing books in new view
-        this.bookRenderer.clearBooks();
-        this.currentPage = 1;
         this.loadInitialData();
     }
 
     async loadInitialData() {
-        await this.loadBooks(1);
-        await this.loadBooks(2);
+        while (this.shouldLoadMore() && !this.apiService.getIsLoading()) {
+            this.currentPage++;
+            await this.loadBooks(this.currentPage);
+        }
+    }
+
+    shouldLoadMore() {
+        const trigger = document.getElementById('scrollTrigger');
+        const rect = trigger.getBoundingClientRect();
+        return rect.top < window.innerHeight;
     }
 
     async loadMoreBooks() {
@@ -143,6 +119,25 @@ class BookGenerator {
         if (result && result.items) {
             this.bookRenderer.renderBooks(result.items);
         }
+    }
+
+    switchViewMode(mode) {
+        this.bookRenderer.setViewMode(mode);
+
+        const tableBtn = document.getElementById('tableViewBtn');
+        const galleryBtn = document.getElementById('galleryViewBtn');
+
+        if (mode === 'table') {
+            tableBtn.className = 'btn btn-primary btn-sm active';
+            galleryBtn.className = 'btn btn-outline-primary btn-sm';
+        } else {
+            tableBtn.className = 'btn btn-outline-primary btn-sm';
+            galleryBtn.className = 'btn btn-primary btn-sm active';
+        }
+
+        this.bookRenderer.clearBooks();
+        this.currentPage = 0;
+        this.loadInitialData();
     }
 
     async exportToCsv() {

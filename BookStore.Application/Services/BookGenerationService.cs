@@ -13,7 +13,6 @@ namespace BookStore.Application.Services
             Randomizer.Seed = new Random(combinedSeed);
 
             var faker = new Faker<Book>(parameters.Region.Code)
-                .RuleFor(b => b.Index, f => 0)
                 .RuleFor(b => b.ISBN, f => f.Commerce.Ean13())
                 .RuleFor(b => b.Title, f => GenerateTitle(f))
                 .RuleFor(b => b.Authors, f => GenerateAuthors(f))
@@ -69,19 +68,15 @@ namespace BookStore.Application.Services
 
         private string GenerateTitle(Faker faker)
         {
-            var adjectives = new[] { "Great", "Ancient", "Lost", "Hidden", "Secret", "Dark", "Golden", "Silent", "Eternal", "Forbidden" };
-            var nouns = new[] { "Journey", "Mystery", "Adventure", "Legend", "Kingdom", "Empire", "Castle", "Forest", "Mountain", "Ocean" };
+            var wordCount = faker.Random.Int(1, 4);
+            var words = faker.Lorem.Words(wordCount);
 
-            var titleTypes = new Func<string>[]
+            for (int i = 0; i < words.Length; i++)
             {
-            () => $"The {faker.PickRandom(adjectives)} {faker.PickRandom(nouns)}",
-            () => $"{faker.PickRandom(nouns)} of {faker.PickRandom(adjectives)} {faker.PickRandom(nouns)}",
-            () => $"A {faker.PickRandom(adjectives)} Story",
-            () => $"The {faker.PickRandom(nouns)}",
-            () => $"{faker.PickRandom(adjectives)} {faker.PickRandom(nouns)}"
-            };
-
-            return faker.PickRandom(titleTypes)();
+                if (i == 0) words[i] = char.ToUpper(words[i][0]) + words[i].Substring(1).ToLower();
+                else words[i] = words[i].ToLower();
+            }
+            return string.Join(" ", words);
         }
 
         private List<string> GenerateAuthors(Faker faker)

@@ -5,7 +5,7 @@
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAADK2D8lvbdU6Wrx+aH6ykAQAAAAACAAAAAAAQZgAAAAEAACAAAADrdgOaoTmBbooK8ZP6MGnrQjKGFbXowRpkfiLPzQOTmAAAAAAOgAAAAAIAACAAAABnp2bEzQicHk4iqwJ1+kA6SSOwpaPNUZgYxriqZsmxsCAAAADnYA8CPQ3qMndUDq+q+lrPXP3tZuILK85GlhUyrJuBY0AAAACsxvpLjiFvWNSQEAjKRXqhggLgilp1HLzDeRc0V2s91xN0Sv3kWY5RcN2nsBbIOBuOctnPOQrhU5qY+iFZ65CK</EncryptedPassword>
     <_PublishTargetUrl>ftp://147.45.66.49/BookStore</_PublishTargetUrl>
-    <History>True|2025-05-28T12:49:28.8880466Z||;True|2025-05-28T15:44:12.1142887+04:00||;True|2025-05-28T13:49:52.5568798+04:00||;</History>
+    <History>True|2025-05-28T14:31:06.8311834Z||;True|2025-05-28T16:49:28.8880466+04:00||;True|2025-05-28T15:44:12.1142887+04:00||;True|2025-05-28T13:49:52.5568798+04:00||;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -16,13 +16,13 @@
       <publishTime>05/27/2025 23:02:25</publishTime>
     </File>
     <File Include="Bogus.dll">
-      <publishTime>04/12/2025 20:39:46</publishTime>
+      <publishTime>12/04/2025 20:39:46</publishTime>
     </File>
     <File Include="BookStore.Application.dll">
-      <publishTime>05/28/2025 15:34:12</publishTime>
+      <publishTime>05/28/2025 18:25:15</publishTime>
     </File>
     <File Include="BookStore.Application.pdb">
-      <publishTime>05/28/2025 15:34:12</publishTime>
+      <publishTime>05/28/2025 18:25:15</publishTime>
     </File>
     <File Include="BookStore.Domain.dll">
       <publishTime>05/28/2025 15:34:12</publishTime>
@@ -31,34 +31,34 @@
       <publishTime>05/28/2025 15:34:12</publishTime>
     </File>
     <File Include="BookStore.Infrastructure.dll">
-      <publishTime>05/28/2025 15:34:13</publishTime>
+      <publishTime>05/28/2025 18:25:15</publishTime>
     </File>
     <File Include="BookStore.Infrastructure.pdb">
-      <publishTime>05/28/2025 15:34:13</publishTime>
+      <publishTime>05/28/2025 18:25:15</publishTime>
     </File>
     <File Include="BookStore.Web.deps.json">
-      <publishTime>05/28/2025 16:43:37</publishTime>
+      <publishTime>05/28/2025 18:25:20</publishTime>
     </File>
     <File Include="BookStore.Web.dll">
-      <publishTime>05/28/2025 16:43:32</publishTime>
+      <publishTime>05/28/2025 18:25:16</publishTime>
     </File>
     <File Include="BookStore.Web.exe">
-      <publishTime>05/28/2025 16:43:32</publishTime>
+      <publishTime>05/28/2025 18:25:17</publishTime>
     </File>
     <File Include="BookStore.Web.pdb">
-      <publishTime>05/28/2025 16:43:32</publishTime>
+      <publishTime>05/28/2025 18:25:16</publishTime>
     </File>
     <File Include="BookStore.Web.runtimeconfig.json">
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="BookStore.Web.staticwebassets.endpoints.json">
-      <publishTime>05/28/2025 16:43:37</publishTime>
+      <publishTime>05/28/2025 18:25:21</publishTime>
     </File>
     <File Include="CsvHelper.dll">
       <publishTime>06/20/2024 18:34:10</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>05/28/2025 16:43:38</publishTime>
+      <publishTime>05/28/2025 18:25:21</publishTime>
     </File>
     <File Include="wwwroot/BookStore.Web.styles.css">
       <publishTime>05/28/2025 13:43:59</publishTime>
@@ -115,13 +115,13 @@
       <publishTime>05/28/2025 13:43:59</publishTime>
     </File>
     <File Include="wwwroot/js/app.js">
-      <publishTime>05/28/2025 16:42:44</publishTime>
+      <publishTime>05/28/2025 18:00:16</publishTime>
     </File>
     <File Include="wwwroot/js/app.js.br">
-      <publishTime>05/28/2025 16:43:37</publishTime>
+      <publishTime>05/28/2025 18:25:20</publishTime>
     </File>
     <File Include="wwwroot/js/app.js.gz">
-      <publishTime>05/28/2025 16:43:32</publishTime>
+      <publishTime>05/28/2025 18:25:17</publishTime>
     </File>
     <File Include="wwwroot/js/book.js">
       <publishTime>05/28/2025 15:30:13</publishTime>
