@@ -49,6 +49,9 @@ class BookGenerator {
 
         document.getElementById('likesRange').addEventListener('input', (e) => {
             document.getElementById('likesValue').textContent = parseFloat(e.target.value).toFixed(1);
+        });
+
+        document.getElementById('likesRange').addEventListener('change', () => {
             this.onParametersChange();
         });
 
@@ -102,6 +105,7 @@ class BookGenerator {
     switchViewMode(mode) {
         this.bookRenderer.setViewMode(mode);
 
+        // Update button states
         const tableBtn = document.getElementById('tableViewBtn');
         const galleryBtn = document.getElementById('galleryViewBtn');
 
@@ -113,7 +117,7 @@ class BookGenerator {
             galleryBtn.className = 'btn btn-primary btn-sm active';
         }
 
-
+        // Re-render existing books in new view
         this.bookRenderer.clearBooks();
         this.currentPage = 1;
         this.loadInitialData();
