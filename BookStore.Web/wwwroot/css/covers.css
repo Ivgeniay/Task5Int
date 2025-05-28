@@ -1,0 +1,85 @@
+﻿.book-cover-container {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .book-cover-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 2px 12px rgb(76, 55, 55);
+    }
+
+.book-cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.book-cover-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient( to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 1) 80%, transparent 100% );
+    color: white;
+    padding: 20px 15px 15px;
+    text-align: center;
+}
+
+.book-cover-title {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 38px;
+}
+
+.book-cover-author {
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.95;
+    font-style: italic;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+    .book-cover-author::before {
+        content: "by ";
+        font-style: normal;
+        opacity: 0.8;
+    }
+
+@media (max-width: 768px) {
+    .book-cover-container {
+        width: 160px;
+        height: 240px;
+    }
+
+    .book-cover-title {
+        font-size: 14px;
+    }
+
+    .book-cover-author {
+        font-size: 12px;
+    }
+
+    .book-cover-overlay {
+        padding: 15px 10px 10px;
+    }
+}

@@ -79,8 +79,8 @@ class BookGenerator {
         this.currentPage = 1;
         this.bookRenderer.clearBooks();
         this.loadInitialData().then(() => {
-            setTimeout(() => this.checkScrollTrigger(), 100);
-        });
+            setTimeout(() => this.loadUntilScrollTriggerHidden(), 300);
+        })
     }
 
     checkScrollTrigger() {
@@ -91,10 +91,25 @@ class BookGenerator {
         }
     }
 
+    async loadUntilScrollTriggerHidden(attemptCount = 0) {
+        const maxAttempts = 10;
+
+        if (attemptCount >= maxAttempts) {
+            return;
+        }
+
+        const trigger = document.getElementById('scrollTrigger');
+        const rect = trigger.getBoundingClientRect();
+
+        if (rect.top < window.innerHeight && !this.apiService.getIsLoading()) {
+            await this.loadMoreBooks();
+            await this.loadUntilScrollTriggerHidden(attemptCount + 1);
+        }
+    }
+
     async loadInitialData() {
         await this.loadBooks(1);
-
-        checkScrollTrigger();
+        await this.loadUntilScrollTriggerHidden();
     }
 
     async loadMoreBooks() {
@@ -107,8 +122,6 @@ class BookGenerator {
     async loadBooks(pageNumber) {
         const parameters = this.getParameters();
         parameters.PageNumber = pageNumber;
-
-        console.log('Sending parameters:', parameters);
 
         const result = await this.apiService.loadBooks(parameters);
         if (result && result.items) {

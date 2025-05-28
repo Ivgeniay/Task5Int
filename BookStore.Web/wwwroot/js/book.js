@@ -48,8 +48,6 @@
                 this.expandedRows.add(bookIndex);
             }
         } catch (error) {
-            console.error('Error loading book details:', error);
-            this.showError('Failed to load book details. Please try again.');
         }
     }
 
@@ -60,7 +58,13 @@
             <td colspan="5" class="p-4">
                 <div class="row">
                     <div class="col-md-2">
-                        <img src="${bookDetails.coverImageUrl}" alt="Book cover" class="img-fluid rounded shadow-sm" style="max-height: 200px;">
+                        <div class="book-cover-container">
+                            <img src="${bookDetails.coverImageUrl}" alt="Book cover" class="book-cover-image">
+                            <div class="book-cover-overlay">
+                                <div class="book-cover-title">${this.truncateText(bookDetails.book.title, 25)}</div>
+                                <div class="book-cover-author">${this.truncateText(bookDetails.book.authors[0] || 'Unknown Author', 20)}</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-10">
                         <h5 class="mb-2">${bookDetails.book.title} <span class="text-muted">Paperback</span></h5>
@@ -108,7 +112,8 @@
         this.expandedRows.clear();
     }
 
-    showError(message) {
-        console.error(message);
+    truncateText(text, maxLength) {
+        if (!text) return '';
+        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
     }
 }
